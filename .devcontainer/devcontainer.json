@@ -1,0 +1,63 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.0/containers/rust
+{
+  "name": "Rust",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      // Use the VARIANT arg to pick a Debian OS version: buster, bullseye
+      // Use bullseye when on local on arm64/Apple Silicon.
+      "VARIANT": "bullseye"
+    }
+  },
+  "runArgs": ["--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Set *default* container specific settings.json values on container create.
+      "settings": {
+        "lldb.executable": "/usr/bin/lldb",
+        // VS Code don't watch files under ./target
+        "files.watcherExclude": {
+          "**/target/**": true
+        },
+        "rust-analyzer.checkOnSave.command": "clippy"
+      },
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "vadimcn.vscode-lldb",
+        "mutantdino.resourcemonitor",
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "serayuzgur.crates",
+        "esbenp.prettier-vscode",
+        "codezombiech.gitignore",
+        "eamodio.gitlens",
+        "styled-components.vscode-styled-components",
+        "iden3.circom",
+        "tintinweb.solidity-visual-auditor",
+        "gruntfuggly.todo-tree",
+        "JuanBlanco.solidity"
+      ]
+    }
+  },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  "mounts": [
+    "source=node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
+    "source=packages-react_app-node_modules,target=${containerWorkspaceFolder}/packages/react_app/node_modules,type=volume"
+  ],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+  // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "vscode",
+  "features": {
+    "node": "16.19.0"
+  },
+  "containerEnv": {
+    "DOPPLER_PROJECT": "ethereum",
+    "DOPPLER_CONFIG": "dev",
+    "DOPPLER_TOKEN": "${localEnv:DOPPLER_TOKEN}" // Don't hard-code this!
+  }
+}
