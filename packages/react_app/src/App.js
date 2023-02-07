@@ -39,6 +39,8 @@ import {
   ToggleContainer,
 } from "./components";
 
+import WalletConnectProvider from "@walletconnect/web3-provider";
+
 import { prove, verify, genSolCallData } from "./components/zk";
 
 import logo from "./assets/images/87.png";
@@ -47,6 +49,16 @@ import openseaLogo from "./assets/images/Logomark-Blue.png";
 
 import MintZKNftAbiJson from "@nft-zk/contracts/frontend/MintZKNft.json";
 import * as MintZKNftAddressJson from "@nft-zk/contracts/frontend/MintZKNft_address.json";
+
+const providerWalletConnect = new WalletConnectProvider({
+  rpc: {
+    80001: "https://rpc-mumbai.maticvigil.com/",
+  },
+});
+
+(async () => {
+  await providerWalletConnect.enable();
+})();
 
 const MintZKNftAddress = MintZKNftAddressJson.Contract;
 const vkeyJsonFilePlonk = "CheckPassword_verification_key_plonk.json";
@@ -86,16 +98,31 @@ function App() {
 
   useEffect(() => {
     try {
-      const ret = new ethers.providers.Web3Provider(window.ethereum);
+      // const ret = new ethers.providers.Web3Provider(window.ethereum);
+      const ret = new ethers.providers.Web3Provider(providerWalletConnect);
       setProvider(ret);
     } catch (error) {
-      console.log("Metamask not found");
+      console.log(error);
     }
   }, []);
 
   useEffect(() => {
     loadVerificationKey();
   }, [loadVerificationKey]);
+
+  useEffect(() => {
+    if (provider) {
+      console.log(provider);
+      console.log(provider.getAddress);
+
+      const signer = provider.getSigner();
+
+      (async () => {
+        const address = await signer.getAddress();
+        console.log(address);
+      })();
+    }
+  });
 
   const showStatus = (inputStatus) => {
     setStatus(inputStatus);
