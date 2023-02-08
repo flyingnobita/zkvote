@@ -5,6 +5,7 @@ import {
   Body,
   Button,
   Container,
+  BodyText,
   // Image,
   DivFlex,
   // DivPassword,
@@ -60,6 +61,8 @@ const SemaphoreVotingAddress = SemaphoreVotingAddressJson.Contract;
 function App() {
   const [status, setStatus] = useState("");
   const [provider, setProvider] = useState(null);
+  const [voteCount0, setVoteCount0] = useState(0);
+  const [voteCount1, setVoteCount1] = useState(0);
 
   // useEffect(() => {
   //   try {
@@ -71,10 +74,6 @@ function App() {
   //   }
   // }, []);
 
-  // useEffect(() => {
-  //   loadVerificationKey();
-  // }, [loadVerificationKey]);
-
   useEffect(() => {
     if (provider) {
       console.log(provider);
@@ -83,7 +82,7 @@ function App() {
       const signer = provider.getSigner();
       (async () => {
         const address = await signer.getAddress();
-        console.log(address);
+        console.log("Signer Address: ", address);
       })();
     }
   });
@@ -107,11 +106,27 @@ function App() {
       showStatus("Metamask not found. Pleaes connect Metamask");
       return;
     }
-    console.log("a");
     // await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const signerAddress_ = await signer.getAddress();
     console.log("signerAddress_: ", signerAddress_);
+
+    try {
+      const SemaphoreVotingContract = new ethers.Contract(
+        SemaphoreVotingAddress,
+        SemaphoreVotingAbiJson,
+        signer
+      );
+      console.log("SemaphoreVotingContract: ", SemaphoreVotingContract);
+
+      const voteCount0 = await SemaphoreVotingContract.getVoteCount(1, 0);
+      const voteCount1 = await SemaphoreVotingContract.getVoteCount(1, 1);
+
+      console.log("voteCount0: ", ethers.utils.formatEther(voteCount0));
+      console.log("voteCount1: ", ethers.utils.formatEther(voteCount1));
+    } catch (err) {
+      console.log("err: ", err);
+    }
   }
 
   async function handleButtonVote(e) {
@@ -127,6 +142,10 @@ function App() {
           <DivFlex>
             <Button onClick={handleButtonVote}>Vote</Button>
           </DivFlex>
+          <h2>Poll:</h2>
+          <BodyText>Is Polygon gonna moon?</BodyText>
+          <BodyText>Yes: {voteCount0}</BodyText>
+          <BodyText>No: {voteCount1}</BodyText>
         </Body>
       </Container>
     </div>

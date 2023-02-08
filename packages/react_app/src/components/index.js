@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  background-color: #ffffff;
+  background-color: #334f8f;
   display: flex;
   flex-direction: column;
   height: calc(100vh);
@@ -33,7 +33,7 @@ export const Body = styled.div`
 
 export const Title = styled.h1`
   display: flex;
-  color: #282c34;
+  color: white;
   text-align: center;
   max-width: 80%;
 `;
@@ -331,4 +331,12 @@ export const ToggleContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+`;
+
+export const BodyText = styled.div`
+  /* font-family: "Harukaze"; */
+  margin: 0px 0px 20px 0px;
+  color: #ffffff;
+  font-size: 1.25em;
+  text-align: center;
 `;
