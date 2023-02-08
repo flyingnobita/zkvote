@@ -14,7 +14,7 @@ contract SemaphoreVoting is ISemaphoreVoting, SemaphoreGroups {
     /// @dev Gets a poll id and returns the poll data.
     mapping(uint256 => Poll) internal polls;
     /// @dev Poll ID -> Choice -> Vote count
-    // mapping(uint256 => mapping(uint256 => uint256)) internal votes;
+    mapping(uint256 => mapping(uint256 => uint256)) internal votes;
 
     /// @dev Checks if the poll coordinator is the transaction sender.
     /// @param pollId: Id of the poll.
@@ -70,6 +70,7 @@ contract SemaphoreVoting is ISemaphoreVoting, SemaphoreGroups {
     }
 
     /// @dev See {ISemaphoreVoting-castVote}.
+    // TODO: Change vote, only valid choices
     function castVote(
         uint256 vote,
         uint256 nullifierHash,
@@ -90,6 +91,7 @@ contract SemaphoreVoting is ISemaphoreVoting, SemaphoreGroups {
         verifier.verifyProof(merkleTreeRoot, nullifierHash, vote, pollId, proof, merkleTreeDepth);
 
         polls[pollId].nullifierHashes[nullifierHash] = true;
+        votes[pollId][vote] += 1;
 
         emit VoteAdded(pollId, vote);
     }
@@ -104,4 +106,14 @@ contract SemaphoreVoting is ISemaphoreVoting, SemaphoreGroups {
 
         emit PollEnded(pollId, _msgSender(), decryptionKey);
     }
+
+    // --------------------------------------------------------------------------------
+
+    function getVoteCount(
+        uint256 pollId,
+        uint256 vote
+    ) public view returns (uint256) {
+        return votes[pollId][vote];
+    }
+
 }
