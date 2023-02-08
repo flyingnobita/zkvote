@@ -1,7 +1,8 @@
 import { ethers } from "hardhat";
 import { Contract as semaphoreVotingAddress } from "../frontend/SemaphoreVoting_address.json";
 
-const pollId = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("pollId"));
+// const pollId = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("pollId"));
+const pollId = 1;
 const merkleTreeDepth = 20;
 
 async function main(): Promise<void> {

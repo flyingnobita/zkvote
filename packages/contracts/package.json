@@ -27,7 +27,7 @@
     "localnode": "npx hardhat node",
     "localnodedoDoppler": "doppler run --mount .env -- npx hardhat node",
     "compile": "npx hardhat compile",
-    "deployLocalnode": "npx hardhat run --network localhost scripts/01-deploy_SemaphoreVoting.ts"
+    "deployLocalnode": "bash run.sh"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.7.3",
