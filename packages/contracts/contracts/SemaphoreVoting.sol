@@ -5,16 +5,23 @@ import "@semaphore-protocol/contracts/interfaces/ISemaphoreVoting.sol";
 import "@semaphore-protocol/contracts/interfaces/ISemaphoreVerifier.sol";
 import "@semaphore-protocol/contracts/base/SemaphoreGroups.sol";
 
+import "./verifiers/ZKPVerifier.sol";
+import "./lib/GenesisUtils.sol";
+
 /// @title Semaphore voting contract.
 /// @notice It allows users to vote anonymously in a poll.
 /// @dev The following code allows you to create polls, add voters and allow them to vote anonymously.
-contract SemaphoreVoting is ISemaphoreVoting, SemaphoreGroups {
+contract SemaphoreVoting is ISemaphoreVoting, SemaphoreGroups, ZKPVerifier {
     ISemaphoreVerifier public verifier;
 
     /// @dev Gets a poll id and returns the poll data.
     mapping(uint256 => Poll) internal polls;
     /// @dev Poll ID -> Choice -> Vote count
     mapping(uint256 => mapping(uint256 => uint256)) internal votes;
+
+    uint64 public constant TRANSFER_REQUEST_ID = 1;
+    mapping(uint256 => address) public idToAddress;
+    mapping(address => uint256) public addressToId;
 
     /// @dev Checks if the poll coordinator is the transaction sender.
     /// @param pollId: Id of the poll.
@@ -50,15 +57,11 @@ contract SemaphoreVoting is ISemaphoreVoting, SemaphoreGroups {
     }
 
     /// @dev See {ISemaphoreVoting-addVoter}.
-    function addVoter(uint256 pollId, uint256 identityCommitment) public override onlyCoordinator(pollId) {
-        if (polls[pollId].state != PollState.Created) {
-            revert Semaphore__PollHasAlreadyBeenStarted();
-        }
-
-        _addMember(pollId, identityCommitment);
+    function addVoter(uint256 pollId, uint256 identityCommitment) public override {
+        revert();
     }
 
-    /// @dev See {ISemaphoreVoting-addVoter}.
+    /// @dev See {ISemaphoreVoting-startPoll}.
     function startPoll(uint256 pollId, uint256 encryptionKey) public override onlyCoordinator(pollId) {
         if (polls[pollId].state != PollState.Created) {
             revert Semaphore__PollHasAlreadyBeenStarted();
@@ -108,6 +111,15 @@ contract SemaphoreVoting is ISemaphoreVoting, SemaphoreGroups {
     }
 
     // --------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------
+
+    function _addVoter(uint256 pollId, uint256 identityCommitment) internal {
+        if (polls[pollId].state != PollState.Created) {
+            revert Semaphore__PollHasAlreadyBeenStarted();
+        }
+
+        _addMember(pollId, identityCommitment);
+    }
 
     function getVoteCount(
         uint256 pollId,
@@ -116,4 +128,43 @@ contract SemaphoreVoting is ISemaphoreVoting, SemaphoreGroups {
         return votes[pollId][vote];
     }
 
+    /**
+     * @dev _beforeProofSubmit
+     */
+    function _beforeProofSubmit(
+        uint64, /* requestId */
+        uint256[] memory inputs,
+        ICircuitValidator validator
+    ) internal view override {
+        // check that challenge input of the proof is equal to the msg.sender
+        address addr = GenesisUtils.int256ToAddress(
+            inputs[validator.getChallengeInputIndex()]
+        );
+        require(
+            _msgSender() == addr,
+            "address in proof is not a sender address"
+        );
+    }
+
+    /**
+     * @dev _afterProofSubmit
+     */
+    function _afterProofSubmit(
+        uint64 requestId,
+        uint256[] memory inputs,
+        ICircuitValidator validator
+    ) internal override {
+        require(
+            requestId == TRANSFER_REQUEST_ID && addressToId[_msgSender()] == 0,
+            "proof can not be submitted more than once"
+        );
+
+        uint256 id = inputs[validator.getChallengeInputIndex()];
+        // execute the airdrop
+        if (idToAddress[id] == address(0)) {
+            _addVoter(1, 11784763969337111784082690226747794823040885507524961134688098949087024400110);
+            addressToId[_msgSender()] = id;
+            idToAddress[id] = _msgSender();
+        }
+    }
 }
