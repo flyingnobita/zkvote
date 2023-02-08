@@ -11,7 +11,7 @@ async function main(): Promise<void> {
   const semaphoreVoting = await ethers.getContractAt("SemaphoreVoting", semaphoreVotingAddress);
 
   await semaphoreVoting.createPoll(pollId, deployer.address, merkleTreeDepth);
-  console.log(`Created poll with pollId ${pollId}`)
+  console.log(`Created poll with pollId ${pollId} and coordinator ${deployer.address}`)
 }
 
 main()
