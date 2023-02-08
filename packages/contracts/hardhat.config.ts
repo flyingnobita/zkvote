@@ -24,6 +24,7 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.MNEMONIC,
         count: 10,
       },
+      chainId: 1337
     },
   },
   etherscan: {
