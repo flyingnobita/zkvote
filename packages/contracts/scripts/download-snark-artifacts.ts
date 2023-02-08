@@ -2,7 +2,7 @@ import download from "download"
 import fs from "fs"
 
 async function main() {
-    const snarkArtifactsPath = "../snark-artifacts"
+    const snarkArtifactsPath = "./snark-artifacts"
     const url = `http://www.trusted-setup-pse.org/semaphore/${20}`
 
     if (!fs.existsSync(snarkArtifactsPath)) {

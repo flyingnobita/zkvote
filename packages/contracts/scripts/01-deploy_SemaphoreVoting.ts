@@ -16,6 +16,7 @@ async function main(): Promise<void> {
     }
   );
   const contract = await contractFactory.deploy(semaphoreVerifierAddress);
+
   await contract.deployed();
   await deployHelper.afterDeploy(contract, "SemaphoreVoting");
 }

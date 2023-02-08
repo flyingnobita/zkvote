@@ -7,13 +7,14 @@ import '@nomiclabs/hardhat-ethers';
 import '@typechain/hardhat';
 import 'dotenv/config'
 import "@semaphore-protocol/hardhat"
-import "./tasks/deploy-semaphore-voting"
+// import "./tasks/deploy-semaphore-voting"
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
 const config: HardhatUserConfig = {
   solidity: "0.8.4",
+  defaultNetwork: "hardhat",
   networks: {
     hardhat: {
       forking: {
