@@ -50,7 +50,3 @@ yarn deployLocalnode
 ```bash
 yarn react
 ```
-
-###
-
-Issuer is responsible for issuing a claim of whether a person is a member of a DAO and whether they're degen or not, not to do the actual voting.

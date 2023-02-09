@@ -75,7 +75,7 @@ function saveFrontendFiles(
   deployerBalanceAfterReadable: string,
   networkChainId: string
 ) {
-  const contractsDir = __dirname + "/../frontend";
+  const contractsDir = __dirname + "/../../frontend";
 
   if (!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir);

@@ -23,6 +23,7 @@ async function main(): Promise<void> {
     wasmFilePath,
     zkeyFilePath
   })
+  console.log(semaphoreVotingAddress)
 
   await semaphoreVoting.castVote(vote, fullProof.nullifierHash, pollId, fullProof.proof);
 }

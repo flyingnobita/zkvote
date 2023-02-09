@@ -2,18 +2,18 @@
 // ========================================================
 import { Identity } from "@semaphore-protocol/identity"
 import QRCode from 'qrcode'
+import uuid from 'uuid-random';
 
 import { Contract as semaphoreVotingAddress } from "../frontend/SemaphoreVoting_address.json";
-import {schema, issuer} from "./constants.json"
+import {schema, issuer} from "./polygon-id-constants.json"
 
 const proofRequest = {
     // 1. UUID for the request
     // - can be anything UUID
-    "id": "c811849d-6bfb-4d85-936e-3d9759c7f105",
+    "id": uuid(),
     // 2. Content type used by the Polygon ID wallet
     // - needs to be constant / does not change
     "typ": "application/iden3comm-plain-json",
-    // 3. ?
     "type": "https://iden3-communication.io/proofs/1.0/contract-invoke-request",
     // 4. Payload to send for proof request
     "body": {

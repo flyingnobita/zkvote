@@ -1,7 +1,7 @@
 import { run, ethers } from "hardhat";
-import DeployHelper from "./deploy_helper";
-import { hexToBytes, fromLittleEndian } from "./helpers";
-import { schema } from "./constants.json"
+import DeployHelper from "./utils/deploy-helpers";
+import { hexToBytes, fromLittleEndian } from "./utils/utils";
+import { schema } from "./polygon-id-constants.json"
 
 async function main(): Promise<void> {
   const [deployer] = await ethers.getSigners();
