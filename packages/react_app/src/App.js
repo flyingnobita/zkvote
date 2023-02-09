@@ -10,6 +10,7 @@ import {
   Button,
   Container,
   BodyText,
+  WalletText,
   // Image,
   DivFlex,
   // DivPassword,
@@ -18,6 +19,7 @@ import {
   // DivStatus,
   Title,
   Title2,
+  Title3,
   // BottomText,
   // PriceText,
   // Link,
@@ -211,11 +213,9 @@ function App() {
     <div className="App">
       <Container>
         <Body>
-          <Title>zkVoting with Semaphore on Polygon ID</Title>
-          <DivFlex>
-            <Button onClick={connectWallet}>Connect</Button>
-          </DivFlex>
-          signerAddress: {signerAddress}
+          <Title>Secret Suffrage</Title>
+          {/* <Title>Anonymous Voting with Semaphore and Polygon ID</Title> */}
+          <Title2>1. Add Voter in Polygin ID</Title2>
           <Canvas
             text={JSON.stringify(proofRequest)}
             options={{
@@ -225,23 +225,28 @@ function App() {
               width: 200,
               color: {
                 dark: "#010599FF",
-                light: "#FFBF60FF",
+                light: "#FFFFFF",
               },
             }}
           />
-          <Title2>Is Polygon gonna moon?</Title2>
+          <Title2>2 Connect Wallet</Title2>
+          <DivFlex>
+            <Button onClick={connectWallet}>Connect</Button>
+          </DivFlex>
+          <p></p>
+          <WalletText> signerAddress: {signerAddress}</WalletText>
+          <Title3>3. Vote: Is Matic gonna moon?</Title3>
           <DivFlex>
             <Button onClick={handleButtonVoteYes}>Yes</Button>
-          </DivFlex>
-          <DivFlex>
             <Button onClick={handleButtonVoteNo}>No</Button>
           </DivFlex>
-          <DivFlex>
+          {/* <DivFlex>
             <Button onClick={handleButtonViewVote}>View Vote</Button>
-          </DivFlex>
-          <h2>Poll:</h2>
-          <BodyText>Yes: {voteCount1}</BodyText>
-          <BodyText>No: {voteCount0}</BodyText>
+          </DivFlex> */}
+          <h2>Results:</h2>
+          <BodyText>
+            Yes: {voteCount1} | No: {voteCount0}
+          </BodyText>
         </Body>
       </Container>
     </div>

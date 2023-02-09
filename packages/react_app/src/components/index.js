@@ -5,7 +5,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(100vh);
-  font-family: "Harukaze";
+  font-family: "Helvetica";
 `;
 
 export const Header = styled.header`
@@ -27,8 +27,8 @@ export const Body = styled.div`
   flex-direction: column;
   font-size: calc(10px + 2vmin);
   justify-content: center;
-  margin-top: 20px;
-  padding-bottom: 80px;
+  /* margin-top: 20px; */
+  /* padding-bottom: 80px; */
 `;
 
 export const Title = styled.h1`
@@ -43,6 +43,14 @@ export const Title2 = styled.h2`
   color: white;
   text-align: center;
   max-width: 80%;
+`;
+
+export const Title3 = styled.h2`
+  display: flex;
+  color: white;
+  text-align: center;
+  max-width: 80%;
+  font-style: italic;
 `;
 
 export const DivFlex = styled.div`
@@ -68,7 +76,7 @@ export const LabelPassword = styled.label`
 export const InputPassword = styled.input`
   border: none;
   border-bottom: 2px solid #282c34;
-  font-family: "Harukaze";
+  font-family: "Helvetica";
   color: #ab2424;
   font-size: 1em;
   margin-top: 4px;
@@ -87,14 +95,14 @@ export const Button = styled.button`
   padding: 12px 24px;
   text-align: center;
   text-decoration: none;
-  font-family: "Harukaze";
+  font-family: "Helvetica";
 `;
 
 export const DivStatus = styled.div`
   margin-top: 15px;
   text-align: center;
   color: #ab2424;
-  font-family: "Harukaze";
+  font-family: "Helvetica";
   font-size: 1em;
   margin: 30px 0px 20px 0px;
 `;
@@ -114,14 +122,14 @@ export const Link = styled.a.attrs({
 `;
 
 export const BottomText = styled.div`
-  font-family: "Harukaze";
+  font-family: "Helvetica";
   color: #282c34;
   font-size: 1.5em;
   text-align: center;
 `;
 
 export const PriceText = styled.div`
-  font-family: "Harukaze";
+  font-family: "Helvetica";
   margin: 0px 0px 20px 0px;
   color: #282c34;
   font-size: 1.25em;
@@ -341,9 +349,13 @@ export const ToggleContainer = styled.div`
 `;
 
 export const BodyText = styled.div`
-  /* font-family: "Harukaze"; */
+  /* font-family: "Helvetica"; */
   margin: 0px 0px 20px 0px;
   color: #ffffff;
   font-size: 1.25em;
   text-align: center;
+`;
+
+export const WalletText = styled.div`
+  font-family: monospace;
 `;
