@@ -1,6 +1,7 @@
 import { run, ethers } from "hardhat";
 import DeployHelper from "./deploy_helper";
 import { hexToBytes, fromLittleEndian } from "./helpers";
+import { schema } from "./constants.json"
 
 async function main(): Promise<void> {
   const [deployer] = await ethers.getSigners();
@@ -25,9 +26,7 @@ async function main(): Promise<void> {
   // - do not change for testnet
   const validatorAddress = "0xb1e86C4c687B85520eF4fd2a0d14e81970a15aFB";
 
-  const schemaHash = "901d35cefb577a4d2b2c55ee3e10be6d"; // extracted from PID Platform
-
-  const schemaEnd = fromLittleEndian(hexToBytes(schemaHash));
+  const schemaEnd = fromLittleEndian(hexToBytes(schema.hash));
   const query = {
     schema: ethers.BigNumber.from(schemaEnd),
     // slotIndex2 indicates the value stored as Attribute 1 inside the claim

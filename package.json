@@ -11,7 +11,6 @@
     "reactBuild": "yarn workspace @nft-zk/react_app build",
     "localnode": "yarn workspace @nft-zk/contracts localnode",
     "deployLocalnode": "yarn workspace @nft-zk/contracts deployLocalnode",
-    "deployRinkeby": "yarn workspace @nft-zk/contracts deployRinkeby",
     "startPoll": "yarn workspace @nft-zk/contracts startPoll"
   },
   "devDependencies": {},

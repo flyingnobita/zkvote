@@ -39,6 +39,8 @@ PAGEKITE_SUBDOMIAN=
 Run a local fork of the Polygon Mumbai testnet and deploy semaphore contracts. This also initiates a tunnel to the local server using pagekite at `https://${PAGEKITE_SUBDOMAIN}.pagekite.me`.
 
 ```bash
+cd packages/contracts
+
 yarn localnode
 yarn deployLocalnode
 ```
@@ -48,3 +50,7 @@ yarn deployLocalnode
 ```bash
 yarn react
 ```
+
+###
+
+Issuer is responsible for issuing a claim of whether a person is a member of a DAO and whether they're degen or not, not to do the actual voting.

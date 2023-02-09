@@ -1,10 +1,10 @@
 // Imports
 // ========================================================
-import { ethers } from "hardhat";
 import { Identity } from "@semaphore-protocol/identity"
 import QRCode from 'qrcode'
 
 import { Contract as semaphoreVotingAddress } from "../frontend/SemaphoreVoting_address.json";
+import {schema, issuer} from "./constants.json"
 
 const proofRequest = {
     // 1. UUID for the request
@@ -24,7 +24,7 @@ const proofRequest = {
             // - hash of the function name from the ABI - b68967e2 = submitZKPResponse
             "method_id": "b68967e2",
             // - chain id of the network
-            "chain_id": 31337,
+            "chain_id": 1337,
             // - network name
             // "network": "polygon-mumbai"
             "network": "localhost"
@@ -46,7 +46,7 @@ const proofRequest = {
                     "query": {
                         // - whitelist of polygon ID platform identifier
                         "allowed_issuers": [
-                            "118FaDqXhUcL1eZSV1fgupqkHDqc5Vgh4HXDrhFZP",
+                            issuer,
                             // "*"
                         ],
                         // - conditions to be met with zk-query-language - see https://0xpolygonid.github.io/tutorials/verifier/verification-library/zk-query-language/
@@ -57,8 +57,8 @@ const proofRequest = {
                         },
                         // - schema of the proof and type, type is case-sensitive
                         "schema": {
-                            "url": "https://s3.eu-west-1.amazonaws.com/polygonid-schemas/46a5af96-d8ba-4fc8-90f3-d8e84ca83769.json-ld",
-                            "type": "TestDAOMember"
+                            "url": schema.url,
+                            "type": schema.type
                         }
                     }
                 }
@@ -72,7 +72,9 @@ async function main(): Promise<void> {
   const identity = new Identity("test")
   console.log(`Created identity with commitment ${identity.commitment}`)
 
-  await QRCode.toFile("qr.png", JSON.stringify(proofRequest), {errorCorrectionLevel: 'Q', type:'terminal', small: true})
+  const filename = "qr.png"
+  await QRCode.toFile(filename, JSON.stringify(proofRequest), {errorCorrectionLevel: 'Q', type:'terminal', small: true})
+  console.log(`QR code saved to ${filename}`)
 }
 
 main()
