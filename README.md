@@ -72,7 +72,7 @@ yarn startPoll
 
 6. Connect your metamask mobile to the web-app via Wallet Connect. 
   - Click connect on the frontend and wait for the wallet connect QR code to pop-up.
-  - Scan it on the Metamask mobile app to connect. Click connect again to see on the web-app that it's connected.
+  - Scan it on the Metamask mobile app to connect. Click connect again to see on the signer address that it's connected.
 
 7. Initiate the voting transaction by clicking on a choice. Verify the nonce on Metamask mobile and sign the transaction.
 
