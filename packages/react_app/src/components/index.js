@@ -38,6 +38,13 @@ export const Title = styled.h1`
   max-width: 80%;
 `;
 
+export const Title2 = styled.h2`
+  display: flex;
+  color: white;
+  text-align: center;
+  max-width: 80%;
+`;
+
 export const DivFlex = styled.div`
   display: flex;
   flex-direction: column;

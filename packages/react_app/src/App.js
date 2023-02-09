@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { Group } from "@semaphore-protocol/group";
 import { Identity } from "@semaphore-protocol/identity";
 import { generateProof } from "@semaphore-protocol/proof";
+import { useQRCode } from "next-qrcode";
 
 import {
   Body,
@@ -16,6 +17,7 @@ import {
   // InputPassword,
   // DivStatus,
   Title,
+  Title2,
   // BottomText,
   // PriceText,
   // Link,
@@ -48,6 +50,8 @@ import * as SemaphoreVotingAddressJson from "@nft-zk/contracts/frontend/Semaphor
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
+import { proofRequest } from "./Qr";
+
 const pollId = 1;
 const merkleTreeDepth = 20;
 
@@ -69,6 +73,10 @@ function App() {
   const [voteCount0, setVoteCount0] = useState(0);
   const [voteCount1, setVoteCount1] = useState(0);
   const [semaphoreVoting, setSemaphoreVoting] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [signerAddress, setSignerAddress] = useState(null);
+
+  const { Canvas } = useQRCode();
 
   // useEffect(() => {
   //   try {
@@ -97,9 +105,7 @@ function App() {
     setStatus(inputStatus);
   };
 
-  async function castVote() {
-    showStatus("");
-
+  async function connectWallet() {
     (async () => {
       await providerWalletConnect.enable();
     })();
@@ -120,6 +126,12 @@ function App() {
     const signer = provider.getSigner();
     const signerAddress_ = await signer.getAddress();
     console.log("signerAddress_: ", signerAddress_);
+    setSigner(signer);
+    setSignerAddress(signerAddress_);
+  }
+
+  async function castVote(vote) {
+    showStatus("");
 
     const SemaphoreVotingContract = new ethers.Contract(
       SemaphoreVotingAddress,
@@ -129,7 +141,6 @@ function App() {
     console.log("SemaphoreVotingContract: ", SemaphoreVotingContract);
     setSemaphoreVoting(SemaphoreVotingContract);
 
-    const vote = 1;
     const group = new Group(pollId, merkleTreeDepth);
 
     const identity = new Identity("test");
@@ -174,14 +185,21 @@ function App() {
 
     const voteCount0 = await SemaphoreVotingContract.getVoteCount(1, 0);
     const voteCount1 = await SemaphoreVotingContract.getVoteCount(1, 1);
+    setVoteCount0(ethers.utils.formatEther(voteCount0) * 10 ** 18);
+    setVoteCount1(ethers.utils.formatEther(voteCount1) * 10 ** 18);
 
     console.log("voteCount0: ", ethers.utils.formatEther(voteCount0));
     console.log("voteCount1: ", ethers.utils.formatEther(voteCount1));
   }
 
-  async function handleButtonVote(e) {
+  async function handleButtonVoteYes(e) {
     e.preventDefault();
-    await castVote();
+    await castVote(1);
+  }
+
+  async function handleButtonVoteNo(e) {
+    e.preventDefault();
+    await castVote(0);
   }
 
   async function handleButtonViewVote(e) {
@@ -195,13 +213,33 @@ function App() {
         <Body>
           <Title>zkVoting with Semaphore on Polygon ID</Title>
           <DivFlex>
-            <Button onClick={handleButtonVote}>Vote</Button>
+            <Button onClick={connectWallet}>Connect</Button>
+          </DivFlex>
+          signerAddress: {signerAddress}
+          <Canvas
+            text={JSON.stringify(proofRequest)}
+            options={{
+              level: "M",
+              margin: 3,
+              scale: 4,
+              width: 200,
+              color: {
+                dark: "#010599FF",
+                light: "#FFBF60FF",
+              },
+            }}
+          />
+          <Title2>Is Polygon gonna moon?</Title2>
+          <DivFlex>
+            <Button onClick={handleButtonVoteYes}>Yes</Button>
+          </DivFlex>
+          <DivFlex>
+            <Button onClick={handleButtonVoteNo}>No</Button>
           </DivFlex>
           <DivFlex>
             <Button onClick={handleButtonViewVote}>View Vote</Button>
           </DivFlex>
           <h2>Poll:</h2>
-          <BodyText>Is Polygon gonna moon?</BodyText>
           <BodyText>Yes: {voteCount0}</BodyText>
           <BodyText>No: {voteCount1}</BodyText>
         </Body>
