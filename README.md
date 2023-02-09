@@ -27,7 +27,7 @@ PAGEKITE_SUBDOMIAN=
 
 1. Go to https://platform-test.polygonid.com and create a claim schema with a single attribute:
 ```
-isDegen?: boolean
+Reputation: number
 ```
 2. Generate QR code to issue claims and send to claimers.
 3. Install the Polygon ID app on mobile and scan the QR code on the Polygon ID app to issue a claim to yourself.

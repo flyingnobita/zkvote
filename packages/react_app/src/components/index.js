@@ -36,6 +36,7 @@ export const Title = styled.h1`
   color: white;
   text-align: center;
   max-width: 80%;
+  margin-bottom: 0px;
 `;
 
 export const Title2 = styled.h2`
@@ -52,11 +53,29 @@ export const Title3 = styled.h2`
   max-width: 80%;
 `;
 
+export const Title4 = styled.h2`
+  display: flex;
+  text-align: center;
+  font-size: calc(10px + 2vmin);
+  margin-top: 0px;
+`;
+
+export const Title5 = styled.h1`
+  display: flex;
+  color: white;
+  text-align: center;
+  max-width: 80%;
+  font-size: calc(14px + 2vmin);
+  margin-top: 0px;
+  margin-bottom: 0px;
+`;
+
 export const DivFlex = styled.div`
   display: flex;
   flex-direction: column;
   justify-items: center;
   align-items: center;
+  margin: 0px;
 `;
 
 export const ButtonFlex = styled.div`
@@ -367,4 +386,5 @@ export const BodyText = styled.div`
 export const WalletText = styled.div`
   font-family: monospace;
   font-size: 0.6em;
+  margin-top: 40px;
 `;

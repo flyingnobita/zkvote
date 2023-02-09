@@ -51,8 +51,8 @@ const proofRequest = {
                         ],
                         // - conditions to be met with zk-query-language - see https://0xpolygonid.github.io/tutorials/verifier/verification-library/zk-query-language/
                         "req": {
-                            "isDegen?": {
-                                "$eq": 1
+                            "Reputation": {
+                                "$gt": 69
                             }
                         },
                         // - schema of the proof and type, type is case-sensitive

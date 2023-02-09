@@ -37,8 +37,8 @@ async function main(): Promise<void> {
     // 3 = greater-than
     // 4 = in
     // 5 = not-in
-    operator: 1,
-    value: [1, ...new Array(63).fill(0).map((i) => 0)], // the value must be 1 = true
+    operator: 3,
+    value: [69, ...new Array(63).fill(0).map((i) => 0)],
     circuitId: "credentialAtomicQuerySig",
   };
 
