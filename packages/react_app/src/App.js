@@ -240,8 +240,8 @@ function App() {
             <Button onClick={handleButtonViewVote}>View Vote</Button>
           </DivFlex>
           <h2>Poll:</h2>
-          <BodyText>Yes: {voteCount0}</BodyText>
-          <BodyText>No: {voteCount1}</BodyText>
+          <BodyText>Yes: {voteCount1}</BodyText>
+          <BodyText>No: {voteCount0}</BodyText>
         </Body>
       </Container>
     </div>
