@@ -9,7 +9,7 @@ export const Container = styled.div`
 `;
 
 export const Header = styled.header`
-  background-color: #ffffff;
+  background-color: #334f8f;
   color: black;
   display: flex;
   flex-direction: row;
@@ -21,6 +21,7 @@ export const Header = styled.header`
 `;
 
 export const Body = styled.div`
+  background-color: #334f8f;
   align-items: center;
   color: white;
   display: flex;

@@ -223,7 +223,7 @@ function App() {
           <Title5>DeFi DAO</Title5>
           {/* <Title>Anonymous Voting with Semaphore and Polygon ID</Title> */}
           <Title2>1. Register to vote using Polygon ID</Title2>
-          <Title4>Reputation > 69</Title4>
+          <Title4>Reputation {">"} 69</Title4>
           <Canvas
             text={JSON.stringify(proofRequest)}
             options={{
@@ -237,11 +237,55 @@ function App() {
               },
             }}
           />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
           <Title2>2. Connect Wallet</Title2>
           <DivFlex>
             <Button onClick={connectWallet}>Connect</Button>
           </DivFlex>
           <WalletText> signerAddress: {signerAddress}</WalletText>
+          <br />
+          <br />
+          <br />
+          <br /> <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
           <Title3>3. Vote: Is MATIC gonna moon?</Title3>
           <ButtonFlex>
             <Button onClick={handleButtonVoteYes}>Yes</Button>|
@@ -250,10 +294,53 @@ function App() {
           {/* <DivFlex>
             <Button onClick={handleButtonViewVote}>View Vote</Button>
           </DivFlex> */}
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
           <h2>4. Results:</h2>
           <BodyText>
             Yes: {voteCount1} | No: {voteCount0}
           </BodyText>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br /> <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
         </Body>
       </Container>
     </div>
