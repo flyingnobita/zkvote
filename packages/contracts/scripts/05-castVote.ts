@@ -1,12 +1,11 @@
 import { ethers } from "hardhat";
 import { Group } from "@semaphore-protocol/group"
 import { Identity } from "@semaphore-protocol/identity"
-import { FullProof, generateProof } from "@semaphore-protocol/proof"
+import { generateProof } from "@semaphore-protocol/proof"
 import { Contract as semaphoreVotingAddress } from "../frontend/SemaphoreVoting_address.json";
 
 const pollId = 1;
 const merkleTreeDepth = 20;
-const encryptionKey = 0;
 
 const wasmFilePath = `./snark-artifacts/${merkleTreeDepth}/semaphore.wasm`
 const zkeyFilePath = `./snark-artifacts/${merkleTreeDepth}/semaphore.zkey`
@@ -14,17 +13,15 @@ const zkeyFilePath = `./snark-artifacts/${merkleTreeDepth}/semaphore.zkey`
 async function main(): Promise<void> {
   const semaphoreVoting = await ethers.getContractAt("SemaphoreVoting", semaphoreVotingAddress);
 
-  await semaphoreVoting.startPoll(pollId, encryptionKey);
-
   const vote = 1
   const group = new Group(pollId, merkleTreeDepth)
-  
+
   const identity = new Identity("test")
   group.addMember(identity.commitment)
 
   const fullProof = await generateProof(identity, group, pollId, vote, {
-      wasmFilePath,
-      zkeyFilePath
+    wasmFilePath,
+    zkeyFilePath
   })
 
   await semaphoreVoting.castVote(vote, fullProof.nullifierHash, pollId, fullProof.proof);
