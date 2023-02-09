@@ -301,21 +301,6 @@ function App() {
           <br />
           <br />
           <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
           <h2>4. Results:</h2>
           <BodyText>
             Yes: {voteCount1} | No: {voteCount0}
