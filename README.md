@@ -25,9 +25,13 @@ PAGEKITE_SUBDOMIAN=
 
 #### Polygon ID
 
-1. Go to https://platform-test.polygonid.com and create a claim schema.
+1. Go to https://platform-test.polygonid.com and create a claim schema with a single attribute:
+```
+isDegen?: boolean
+```
 2. Generate QR code to issue claims and send to claimers.
 3. Install the Polygon ID app on mobile and scan the QR code on the Polygon ID app to issue a claim to yourself.
+4. Add details of the claim schema and issuer to `packages/contracts/scripts/polygon-id-constants.json` file.
 
 #### Metamask mobile
 
@@ -41,7 +45,9 @@ Run a local fork of the Polygon Mumbai testnet and deploy semaphore contracts. T
 ```bash
 cd packages/contracts
 
+# Spawn a local forked network
 yarn localnode
+# Deploy semaphore contracts and create a dummy poll
 yarn deployLocalnode
 ```
 
