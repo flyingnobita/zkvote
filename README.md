@@ -38,9 +38,11 @@ isDegen?: boolean
 1. Install the Metamask mobile app and create a new wallet.
 2. Add the pagekite address (`https://${PAGEKITE_SUBDOMAIN}.pagekite.me`) as a custom RPC network.
 
-### Run the server
+### Steps
 
-Run a local fork of the Polygon Mumbai testnet and deploy semaphore contracts. This also initiates a tunnel to the local server using pagekite at `https://${PAGEKITE_SUBDOMAIN}.pagekite.me`.
+#### 
+
+1. Instantiate a local fork of the Polygon Mumbai testnet, deploy semaphore contracts and create a dummy poll. 
 
 ```bash
 cd packages/contracts
@@ -50,9 +52,28 @@ yarn localnode
 # Deploy semaphore contracts and create a dummy poll
 yarn deployLocalnode
 ```
+This also initiates a tunnel to the local server at `https://${PAGEKITE_SUBDOMAIN}.pagekite.me` using pagekite.
 
-### Run the frontend
+2. Start the web-app showing the proposal and voting choices.
 
 ```bash
 yarn react
 ```
+
+3. Scan the QR code on the webpage using the Polygon ID app. This generates a proof for the claim in your Polygon ID wallet and initiates a transaction to add yourself as voter.
+
+4. Verify the nonce on Metamask mobile for the transaction, bump up the gas limit to at least 4 million and send the transaction.
+
+5. Start the poll by running
+
+```bash
+yarn startPoll
+```
+
+6. Connect your metamask mobile to the web-app via Wallet Connect. 
+  - Click connect on the frontend and wait for the wallet connect QR code to pop-up.
+  - Scan it on the Metamask mobile app to connect. Click connect again to see on the web-app that it's connected.
+
+7. Initiate the voting transaction by clicking on a choice. Verify the nonce on Metamask mobile and sign the transaction.
+
+8. Wait for the transaction to be mined and the count to be updated on the frontend.
