@@ -47,15 +47,21 @@ export const Title2 = styled.h2`
 
 export const Title3 = styled.h2`
   display: flex;
-  color: white;
+  color: yellow;
   text-align: center;
   max-width: 80%;
-  font-style: italic;
 `;
 
 export const DivFlex = styled.div`
   display: flex;
   flex-direction: column;
+  justify-items: center;
+  align-items: center;
+`;
+
+export const ButtonFlex = styled.div`
+  display: flex;
+  flex-direction: row;
   justify-items: center;
   align-items: center;
 `;
@@ -91,11 +97,13 @@ export const Button = styled.button`
   border-radius: 2px;
   color: #282c34;
   cursor: pointer;
-  font-size: 20px;
-  padding: 12px 24px;
+  font-size: 40px;
+  padding: 12px 30px;
+  margin-left: 40px;
+  margin-right: 40px;
   text-align: center;
   text-decoration: none;
-  font-family: "Helvetica";
+  font-family: "arial";
 `;
 
 export const DivStatus = styled.div`
@@ -358,4 +366,5 @@ export const BodyText = styled.div`
 
 export const WalletText = styled.div`
   font-family: monospace;
+  font-size: 0.6em;
 `;
