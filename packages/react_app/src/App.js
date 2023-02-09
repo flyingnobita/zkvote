@@ -100,6 +100,7 @@ function App() {
         const address = await signer.getAddress();
         console.log("Signer Address: ", address);
       })();
+      viewVote();
     }
   });
 
