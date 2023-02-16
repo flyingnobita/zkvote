@@ -1,5 +1,5 @@
 {
-  "name": "@nft-zk/react_app",
+  "name": "@zkvote/react_app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

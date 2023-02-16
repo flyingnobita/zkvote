@@ -1,4 +1,4 @@
-import { Contract as semaphoreVotingAddress } from "@nft-zk/contracts/frontend/SemaphoreVoting_address.json";
+import { Contract as semaphoreVotingAddress } from "@zkvote/contracts/frontend/SemaphoreVoting_address.json";
 
 export const proofRequest = {
   // 1. UUID for the request

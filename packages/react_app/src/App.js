@@ -50,8 +50,8 @@ import {
   // ToggleContainer,
 } from "./components";
 
-import SemaphoreVotingAbiJson from "@nft-zk/contracts/frontend/SemaphoreVoting.json";
-import * as SemaphoreVotingAddressJson from "@nft-zk/contracts/frontend/SemaphoreVoting_address.json";
+import SemaphoreVotingAbiJson from "@zkvote/contracts/frontend/SemaphoreVoting.json";
+import * as SemaphoreVotingAddressJson from "@zkvote/contracts/frontend/SemaphoreVoting_address.json";
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
