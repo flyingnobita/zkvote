@@ -2,6 +2,8 @@
 
 This project demonstrates a basic implementation for anonymous voting. It uses Polygon ID for authentication and Semaphore for anonymous voting.
 
+This was done as a project at the Polygon @ The Pit Hackathon. It is a collaboration effort between [@shuklaayush](https://github.com/shuklaayush) and [@flyingnobita](https://github.com/flyingnobita)
+
 ## Demo
 
 https://user-images.githubusercontent.com/46126470/219390188-018f569f-871d-43f5-97f5-006f0949c0f7.mp4
