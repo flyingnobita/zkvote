@@ -1,5 +1,5 @@
 {
-  "name": "@nft-zk/root",
+  "name": "@zkvote/root",
   "version": "0.1.0",
   "private": true,
   "packageManager": "yarn@3.2.3",
@@ -7,11 +7,11 @@
     "packages/*"
   ],
   "scripts": {
-    "react": "yarn workspace @nft-zk/react_app start",
-    "reactBuild": "yarn workspace @nft-zk/react_app build",
-    "localnode": "yarn workspace @nft-zk/contracts localnode",
-    "deployLocalnode": "yarn workspace @nft-zk/contracts deployLocalnode",
-    "deployRinkeby": "yarn workspace @nft-zk/contracts deployRinkeby"
+    "react": "yarn workspace @zkvote/react_app start",
+    "reactBuild": "yarn workspace @zkvote/react_app build",
+    "localnode": "yarn workspace @zkvote/contracts localnode",
+    "deployLocalnode": "yarn workspace @zkvote/contracts deployLocalnode",
+    "startPoll": "yarn workspace @zkvote/contracts startPoll"
   },
   "devDependencies": {},
   "resolutions": {

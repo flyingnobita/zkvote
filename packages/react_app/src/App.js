@@ -1,508 +1,331 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
+import { Group } from "@semaphore-protocol/group";
+import { Identity } from "@semaphore-protocol/identity";
+import { generateProof } from "@semaphore-protocol/proof";
+import { useQRCode } from "next-qrcode";
 
 import {
   Body,
   Button,
   Container,
-  Image,
+  BodyText,
+  WalletText,
+  // Image,
   DivFlex,
-  DivPassword,
-  LabelPassword,
-  InputPassword,
-  DivStatus,
+  ButtonFlex,
+  // DivPassword,
+  // LabelPassword,
+  // InputPassword,
+  // DivStatus,
   Title,
-  BottomText,
-  PriceText,
-  Link,
-  LinkLogoContainer,
-  LinkLogo,
-  DivScrollable,
-  DivTooltip,
-  DivTooltipText,
-  Pre,
-  Details,
-  Summary,
-  ZkDetails,
-  DivLeftAlign,
-  DetailButton,
-  DivFlexInputContainer,
-  DivFlexInput,
-  DivFlexFormContainer,
-  DivFlexForm,
-  ZKDetailStatus,
-  Textarea,
-  ToggleWrapper,
-  ToggleLabel,
-  Toggle,
-  ToggleLabelExternal,
-  ToggleContainer,
+  Title2,
+  Title3,
+  Title4,
+  Title5,
+  // BottomText,
+  // PriceText,
+  // Link,
+  // LinkLogoContainer,
+  // LinkLogo,
+  // DivScrollable,
+  // DivTooltip,
+  // DivTooltipText,
+  // Pre,
+  // Details,
+  // Summary,
+  // ZkDetails,
+  // DivLeftAlign,
+  // DetailButton,
+  // DivFlexInputContainer,
+  // DivFlexInput,
+  // DivFlexFormContainer,
+  // DivFlexForm,
+  // ZKDetailStatus,
+  // Textarea,
+  // ToggleWrapper,
+  // ToggleLabel,
+  // Toggle,
+  // ToggleLabelExternal,
+  // ToggleContainer,
 } from "./components";
+
+import SemaphoreVotingAbiJson from "@zkvote/contracts/frontend/SemaphoreVoting.json";
+import * as SemaphoreVotingAddressJson from "@zkvote/contracts/frontend/SemaphoreVoting_address.json";
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
-import { prove, verify, genSolCallData } from "./components/zk";
+import { proofRequest } from "./Qr";
 
-import logo from "./assets/images/87.png";
-import githubLogo from "./assets/images/GitHub-Mark-120px-plus.png";
-import openseaLogo from "./assets/images/Logomark-Blue.png";
-
-import MintZKNftAbiJson from "@nft-zk/contracts/frontend/MintZKNft.json";
-import * as MintZKNftAddressJson from "@nft-zk/contracts/frontend/MintZKNft_address.json";
+const pollId = 1;
+const merkleTreeDepth = 20;
 
 const providerWalletConnect = new WalletConnectProvider({
   rpc: {
-    80001: "https://rpc-mumbai.maticvigil.com/",
+    // 80001: "https://rpc-mumbai.maticvigil.com/",
+    1337: "http://localhost:8545/",
   },
 });
 
-(async () => {
-  await providerWalletConnect.enable();
-})();
+const wasmFilePath = "semaphore.wasm";
+const zkeyFilePath = "semaphore.zkey";
 
-const MintZKNftAddress = MintZKNftAddressJson.Contract;
-const vkeyJsonFilePlonk = "CheckPassword_verification_key_plonk.json";
-const vkeyJsonFileGroth16 = "CheckPassword_verification_key_groth16.json";
-
-const hashedPassword1 =
-  "2659885370391636708883459370353623141128982085472165018711164208023811132296";
-const hashedPassword2 =
-  "4420175747054003989426052527768028062432413895992728912331985761657509285976";
-const hashedPassword3 =
-  "16033069969059630745700456097076759987953764636749827514225296156239583210211";
+const SemaphoreVotingAddress = SemaphoreVotingAddressJson.Contract;
 
 function App() {
   const [status, setStatus] = useState("");
-  const [zkStatus, setZkStatus] = useState("");
-  const [input, setInput] = useState({
-    a: hashedPassword1,
-    b: hashedPassword2,
-    c: hashedPassword3,
-    d: "",
-  });
-  const [proof, setProof] = useState(null);
-  const [publicSignals, setPublicSignals] = useState();
-  const [vkeyJson, setvkeyJson] = useState();
-  const [solCallData, setSolCallData] = useState();
-  const [password, setPassword] = useState("");
-  const [isGroth16, setGroth16] = useState(false);
   const [provider, setProvider] = useState(null);
+  const [voteCount0, setVoteCount0] = useState(0);
+  const [voteCount1, setVoteCount1] = useState(0);
+  const [semaphoreVoting, setSemaphoreVoting] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [signerAddress, setSignerAddress] = useState(null);
 
-  const loadVerificationKey = useCallback(async () => {
-    await fetch(isGroth16 ? vkeyJsonFileGroth16 : vkeyJsonFilePlonk)
-      .then((response) => response.json())
-      .then((data) => {
-        setvkeyJson(data);
-      });
-  }, [isGroth16]);
+  const { Canvas } = useQRCode();
 
-  useEffect(() => {
-    try {
-      // const ret = new ethers.providers.Web3Provider(window.ethereum);
-      const ret = new ethers.providers.Web3Provider(providerWalletConnect);
-      setProvider(ret);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadVerificationKey();
-  }, [loadVerificationKey]);
+  // useEffect(() => {
+  //   try {
+  //     // const ret = new ethers.providers.Web3Provider(window.ethereum);  // Metamask
+  //     const ret = new ethers.providers.Web3Provider(providerWalletConnect);
+  //     setProvider(ret);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (provider) {
       console.log(provider);
-      console.log(provider.getAddress);
+      // console.log(await provider.getAddress());
 
       const signer = provider.getSigner();
-
       (async () => {
         const address = await signer.getAddress();
-        console.log(address);
+        console.log("Signer Address: ", address);
       })();
+      viewVote();
     }
   });
 
   const showStatus = (inputStatus) => {
     setStatus(inputStatus);
   };
-  const showZkStatus = (inputStatus) => {
-    setZkStatus(inputStatus);
-  };
 
-  async function mint() {
-    showStatus("");
+  async function connectWallet() {
+    (async () => {
+      await providerWalletConnect.enable();
+    })();
+
+    try {
+      // const ret = new ethers.providers.Web3Provider(window.ethereum);  // Metamask
+      const ret = new ethers.providers.Web3Provider(providerWalletConnect);
+      setProvider(ret);
+    } catch (error) {
+      console.log(error);
+    }
 
     if (!provider) {
       showStatus("Metamask not found. Pleaes connect Metamask");
       return;
     }
-
-    let solCallData, proof, publicSignals;
-    try {
-      showStatus("Generating proof...");
-      ({ proof, publicSignals } = await prove(input, isGroth16));
-      setProof(proof);
-      setPublicSignals(publicSignals);
-
-      showStatus("");
-    } catch (err) {
-      showStatus("Password incorrect");
-      // console.log(err);
-      return;
-    }
-    try {
-      showStatus("Generating solidity call data...");
-      if (!publicSignals || !proof) {
-        showStatus("Public Signals or Proof missing");
-        return;
-      }
-      const result = await genSolCallData(proof, publicSignals, isGroth16);
-      if (result[0]) {
-        solCallData = result[1];
-        setSolCallData(solCallData);
-        showStatus("Solidity call data generated!");
-      } else {
-        showStatus(result[1]);
-      }
-    } catch (err) {
-      showStatus("Password incorrect");
-      // console.log(err);
-    }
-
-    await provider.send("eth_requestAccounts", []);
+    // await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const signerAddress_ = await signer.getAddress();
-    // console.log("solCallData: ", solCallData);
-    // console.log(typeof solCallData);
-    // console.log("signerAddress_: ", signerAddress_);
-
-    if (
-      solCallData &&
-      signerAddress_ &&
-      typeof window.ethereum !== "undefined"
-    ) {
-      showStatus("Minting");
-      try {
-        const MintZKNftContract = new ethers.Contract(
-          MintZKNftAddress,
-          MintZKNftAbiJson,
-          signer
-        );
-        // console.log("MintZKNftContract: ", MintZKNftContract);
-
-        // let contractCode = await provider.getCode(MintZKNftAddress);
-        // console.log("contractCode: ", contractCode);
-
-        let tx;
-
-        if (!isGroth16) {
-          const solCallDataArray = solCallData.split(",");
-          let splits = [solCallDataArray.shift(), solCallDataArray.join(",")];
-          let proofSolCallData = splits[0];
-          let publicSignalsSolCallData = JSON.parse(splits[1]);
-
-          // console.log("proofSolCallData: ", proofSolCallData);
-          // console.log("publicSignalsSolCallData: ", publicSignalsSolCallData);
-
-          tx = await MintZKNftContract.mintPlonk(
-            proofSolCallData,
-            publicSignalsSolCallData,
-            { gasLimit: 1000000 }
-          );
-        } else {
-          let groth16SolCallData = JSON.parse("[" + solCallData + "]");
-
-          tx = await MintZKNftContract.mintGroth16(
-            groth16SolCallData[0],
-            groth16SolCallData[1],
-            groth16SolCallData[2],
-            groth16SolCallData[3],
-            { gasLimit: 1000000 }
-          );
-        }
-        let tx_receipt = await tx.wait();
-        if (tx_receipt.status === 1) {
-          showStatus("Minting success!");
-        }
-      } catch (err) {
-        // console.log("err: ", err);
-        // console.log("err.name: ", err.name);
-        // console.log("err.code: ", err.code);
-        // console.log("err.message: ", err.message);
-        // console.log("err.data: ", err.data);
-        // console.log("typeof(err.message): ", typeof err.message);
-
-        if (!err.message) {
-          if (
-            err.data.message.includes(
-              "Error: VM Exception while processing transaction"
-            )
-          ) {
-            try {
-              // await method.estimateGas(transaction);
-              showStatus("Unknown error. Please try again.");
-            } catch (err2) {
-              if (err2.message.includes("Kanji:")) {
-                showStatus(err2.message);
-              }
-            }
-          } else {
-            showStatus(err);
-          }
-        } else if (err.message.includes("Kanji: ")) {
-          const innerErrorMsg = err.message.split("\n")[3];
-          var contractError = innerErrorMsg.split("Kanji: ").pop();
-          contractError = contractError.substring(0, contractError.length - 2);
-
-          showStatus(contractError);
-        } else if (err.message.includes("user rejected transaction")) {
-          showStatus("You cancelled the transaction");
-        } else if (err.message.includes("execution reverted: ")) {
-          showStatus(
-            err.message
-              .split("execution reverted: ")[1]
-              .replace(/"/g, "\n")
-              .split("\n")[0]
-          );
-        } else if (err.message.includes("insufficient funds")) {
-          showStatus("Insufficient funds");
-        } else if (err.message.includes("[object Object]")) {
-        } else {
-          showStatus(err.message);
-        }
-      }
-    }
+    console.log("signerAddress_: ", signerAddress_);
+    setSigner(signer);
+    setSignerAddress(signerAddress_);
   }
 
-  const handleAInputChange = (event) => {
-    event.persist();
-    setInput((values) => ({
-      ...values,
-      a: event.target.value,
-    }));
-  };
+  async function castVote(vote) {
+    showStatus("");
 
-  const handleBInputChange = (event) => {
-    event.persist();
-    setInput((values) => ({
-      ...values,
-      b: event.target.value,
-    }));
-  };
+    const SemaphoreVotingContract = new ethers.Contract(
+      SemaphoreVotingAddress,
+      SemaphoreVotingAbiJson,
+      signer
+    );
+    console.log("SemaphoreVotingContract: ", SemaphoreVotingContract);
+    setSemaphoreVoting(SemaphoreVotingContract);
 
-  const handleCInputChange = (event) => {
-    event.persist();
-    setInput((values) => ({
-      ...values,
-      c: event.target.value,
-    }));
-  };
+    const group = new Group(pollId, merkleTreeDepth);
 
-  const handleDInputChange = (event) => {
-    event.persist();
-    setInput((values) => ({
-      ...values,
-      d: event.target.value,
-    }));
-  };
+    const identity = new Identity("test");
+    group.addMember(identity.commitment);
 
-  const handlePublicSignalChanged = (event) => {
-    let val = [event.target.value];
-    val = val[0].split(",");
-    setPublicSignals(val);
-  };
+    console.log("addMember Done");
 
-  async function handleButtonProve(e) {
-    e.preventDefault();
-    showZkStatus("Generating proof...");
+    let fullProof;
     try {
-      const { proof, publicSignals } = await prove(input, isGroth16);
-      setProof(proof);
-      setPublicSignals(publicSignals);
-
-      showZkStatus("Proof success");
+      fullProof = await generateProof(identity, group, pollId, vote, {
+        wasmFilePath,
+        zkeyFilePath,
+      });
     } catch (err) {
-      // console.log(err);
-      showZkStatus("Password incorrect");
+      console.log("generateProof err:", err);
+    }
+    console.log("fullProof: ", fullProof);
+
+    const castVoteResponse = await SemaphoreVotingContract.castVote(
+      vote,
+      fullProof.nullifierHash,
+      pollId,
+      fullProof.proof,
+      { gasLimit: 5000000 }
+    );
+
+    console.log("response: ", castVoteResponse);
+
+    viewVote();
+  }
+
+  async function viewVote() {
+    if (provider) {
+      const signer = provider.getSigner();
+      const signerAddress_ = await signer.getAddress();
+      console.log("signerAddress_: ", signerAddress_);
+
+      const SemaphoreVotingContract = new ethers.Contract(
+        SemaphoreVotingAddress,
+        SemaphoreVotingAbiJson,
+        signer
+      );
+
+      const voteCount0 = await SemaphoreVotingContract.getVoteCount(1, 0);
+      const voteCount1 = await SemaphoreVotingContract.getVoteCount(1, 1);
+      setVoteCount0(ethers.utils.formatEther(voteCount0) * 10 ** 18);
+      setVoteCount1(ethers.utils.formatEther(voteCount1) * 10 ** 18);
+
+      console.log("voteCount0: ", ethers.utils.formatEther(voteCount0));
+      console.log("voteCount1: ", ethers.utils.formatEther(voteCount1));
     }
   }
 
-  async function handleButtonVerify(e) {
+  async function handleButtonVoteYes(e) {
     e.preventDefault();
-    showZkStatus("Verifying proof...");
-    const res = await verify(vkeyJson, publicSignals, proof, isGroth16);
-    showZkStatus(res);
+    await castVote(1);
   }
 
-  async function handleButtonGenSolCallData(e) {
+  async function handleButtonVoteNo(e) {
     e.preventDefault();
-    showZkStatus("Generating solidity verification [arameters...");
-    if (!publicSignals || !proof) {
-      showZkStatus("Public Signals or Proof missing");
-      return;
-    }
-    const result = await genSolCallData(proof, publicSignals, isGroth16);
-    if (result[0]) {
-      setSolCallData(result[1]);
-    } else {
-      showZkStatus(result[1]);
-      return;
-    }
-    showZkStatus("Solidity verification parameters generated!");
+    await castVote(0);
   }
 
-  async function handleButtonMint(e) {
+  async function handleButtonViewVote(e) {
     e.preventDefault();
-    await mint();
+    await viewVote();
   }
-
-  const onNewsletterChange = (checked) => {
-    setGroth16(checked);
-  };
 
   return (
-    <div className="App">
+    <div className="App" onClick={handleButtonViewVote}>
       <Container>
         <Body>
-          <Title>Mint AI Generated Kanji NFTs with Zero Knowledge Proofs</Title>
-          <ToggleContainer>
-            <ToggleLabelExternal>Plonk</ToggleLabelExternal>
-            <ToggleWrapper>
-              <Toggle
-                id="checkbox"
-                type="checkbox"
-                checked={isGroth16}
-                onChange={(e) => onNewsletterChange(e.target.checked)}
-              />
-              <ToggleLabel htmlFor="checkbox" />
-            </ToggleWrapper>
-            <ToggleLabelExternal>Groth16</ToggleLabelExternal>
-          </ToggleContainer>
-          <Image src={logo} alt="kanji" />
-          <PriceText>Price - FREE</PriceText>
-          <DivPassword>
-            <LabelPassword>PASSWORD</LabelPassword>
-            <DivTooltip>
-              (Hint)
-              <DivTooltipText>Try one of: 11111, 22222, 33333</DivTooltipText>
-            </DivTooltip>
-            <InputPassword
-              value={password}
-              onInput={(e) => {
-                setPassword(e.target.value);
-                setInput((prevState) => ({
-                  ...prevState,
-                  d: e.target.value,
-                }));
-              }}
-            />
-          </DivPassword>
+          <Title>Secret Suffrage</Title>
+          <Title5>DeFi DAO</Title5>
+          {/* <Title>Anonymous Voting with Semaphore and Polygon ID</Title> */}
+          <Title2>1. Register to vote using Polygon ID</Title2>
+          <Title4>Reputation {">"} 69</Title4>
+          <Canvas
+            text={JSON.stringify(proofRequest)}
+            options={{
+              level: "M",
+              margin: 3,
+              scale: 4,
+              width: 300,
+              color: {
+                dark: "#010599FF",
+                light: "#FFFFFF",
+              },
+            }}
+          />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <Title2>2. Connect Wallet</Title2>
           <DivFlex>
-            <Button onClick={handleButtonMint}>Mint (Rinkeby)</Button>
+            <Button onClick={connectWallet}>Connect</Button>
           </DivFlex>
-          <DivStatus>{status}</DivStatus>
-          <DivFlex>
-            <p>
-              <Link href="https://flyingnobita.com/posts/2022/09/09/mint-nft-zk">
-                blog post
-              </Link>
-            </p>
-          </DivFlex>
-          <DivLeftAlign>
-            <Details>
-              <Summary>ZK Details</Summary>
-              <ZkDetails>
-                <h2>Prover</h2>
-                <DivFlexFormContainer>
-                  <DivFlexForm onSubmit={handleButtonProve}>
-                    <DivFlexInputContainer>
-                      <label>Password Hash 1:</label>
-                      <DivFlexInput
-                        type="text"
-                        value={input.a}
-                        onChange={handleAInputChange}
-                      />
-                    </DivFlexInputContainer>
-                    <DivFlexInputContainer>
-                      <label>Password Hash 2:</label>
-                      <DivFlexInput
-                        type="text"
-                        value={input.b}
-                        onChange={handleBInputChange}
-                      />
-                    </DivFlexInputContainer>
-                    <DivFlexInputContainer>
-                      <label>Password Hash 3:</label>
-                      <DivFlexInput
-                        type="text"
-                        value={input.c}
-                        onChange={handleCInputChange}
-                      />
-                    </DivFlexInputContainer>
-                    <DivFlexInputContainer>
-                      <label>Minter Password:</label>
-                      <DivFlexInput
-                        type="text"
-                        value={input.d}
-                        onChange={handleDInputChange}
-                      />
-                    </DivFlexInputContainer>
-                    <DetailButton type="submit" value="Prove">
-                      Prove
-                    </DetailButton>
-                  </DivFlexForm>
-                  <ZKDetailStatus>{zkStatus}</ZKDetailStatus>
-                </DivFlexFormContainer>
-                <h2>Verifier</h2>
-                <h3>Public Signals</h3>
-                <Textarea
-                  defaultValue={publicSignals}
-                  onChange={handlePublicSignalChanged}
-                  rows="5"
-                />
-                <h3>Proof</h3>
-                {proof != null && (
-                  <DivScrollable>
-                    <Pre>{JSON.stringify(proof, null, 2)}</Pre>
-                  </DivScrollable>
-                )}
-                <h3>Verification Key</h3>
-                <DivScrollable>
-                  <Pre>{JSON.stringify(vkeyJson, null, 2)}</Pre>
-                </DivScrollable>
-                <DetailButton onClick={handleButtonVerify}>Verify</DetailButton>
-                <ZKDetailStatus>{zkStatus}</ZKDetailStatus>
-                <h3>Solidity Verification Parameters</h3>
-                {solCallData != null && (
-                  <DivScrollable>
-                    <Pre>{JSON.stringify(solCallData, null, 2)}</Pre>
-                  </DivScrollable>
-                )}
-                <DetailButton onClick={handleButtonGenSolCallData}>
-                  Generate
-                </DetailButton>
-                <ZKDetailStatus>{zkStatus}</ZKDetailStatus>
-              </ZkDetails>
-            </Details>
-          </DivLeftAlign>
-          <BottomText>
-            <p>
-              Kanji generated from{" "}
-              <Link href="https://github.com/hardmaru/sketch-rnn">
-                sketch-rnn
-              </Link>
-            </p>
-          </BottomText>
-          <LinkLogoContainer>
-            <Link href="https://github.com/flyingnobita/nft-zk">
-              <LinkLogo src={githubLogo} alt="github" />
-            </Link>
-            <Link href="https://testnets.opensea.io/collection/kanji-v3">
-              <LinkLogo src={openseaLogo} alt="opensea" />
-            </Link>
-          </LinkLogoContainer>
+          <WalletText> signerAddress: {signerAddress}</WalletText>
+          <br />
+          <br />
+          <br />
+          <br /> <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <Title3>3. Vote: Is MATIC gonna moon?</Title3>
+          <ButtonFlex>
+            <Button onClick={handleButtonVoteYes}>Yes</Button>|
+            <Button onClick={handleButtonVoteNo}>No</Button>
+          </ButtonFlex>
+          {/* <DivFlex>
+            <Button onClick={handleButtonViewVote}>View Vote</Button>
+          </DivFlex> */}
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <h2>4. Results:</h2>
+          <BodyText>
+            Yes: {voteCount1} | No: {voteCount0}
+          </BodyText>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br /> <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
         </Body>
       </Container>
     </div>
