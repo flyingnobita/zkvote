@@ -8,6 +8,10 @@ This was done as a project at the Polygon @ The Pit Hackathon. It is a collabora
 
 https://user-images.githubusercontent.com/46126470/219390188-018f569f-871d-43f5-97f5-006f0949c0f7.mp4
 
+## System Architecture
+
+![zkVote-System_Architecture](https://user-images.githubusercontent.com/46126470/219395466-c91f4b63-af0d-441a-b135-e30a38603385.jpeg)
+
 ## How to run
 
 ### Install dependencies
