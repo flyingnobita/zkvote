@@ -4,7 +4,7 @@ This project demonstrates a basic implementation for anonymous voting. It uses P
 
 ## Demo
 
-https://user-images.githubusercontent.com/46126470/219387527-1d84a123-a4b1-425e-814d-f2ad126e3f26.mp4
+https://user-images.githubusercontent.com/46126470/219390188-018f569f-871d-43f5-97f5-006f0949c0f7.mp4
 
 ## How to run
 
@@ -49,7 +49,7 @@ Reputation: number
 1. Instantiate a local fork of the Polygon Mumbai testnet, deploy semaphore contracts and create a dummy poll. 
 
 ```bash
-cd packages/contracts
+
 
 # Spawn a local forked network
 yarn localnode
